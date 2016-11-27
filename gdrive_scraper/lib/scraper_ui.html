@@ -1,0 +1,13 @@
+<form>
+
+    <label>Drive folder id</label><br>
+
+    <input type="text" [(ngModel)]="folderId"><br>
+
+    <button (click)="runScraper()">Start!</button>
+
+    <p *ngIf="working">I'm working, see console for details and errors.</p>
+
+    <div #output><!-- Download anchor will appear here --></div>
+
+</form>
