@@ -1,0 +1,13 @@
+<h1>Drive scraper</h1>
+
+<!-- Not logged in yet ...-->
+<p *ngIf="client == null">Please log-in ...</p>
+
+<!-- ... and now is logged in -->
+<div *ngIf="client != null">
+
+    <h2>Welcome!</h2>
+
+    <scraper-ui [client]="client"></scraper-ui>
+
+</div>
