@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:angular2/core.dart';
-import 'package:gdrive_scraper/scraper_ui.dart';
-import 'package:gdrive_scraper/config.dart';
+import 'package:egamebook_server/src/ui/scraper_ui.dart';
+import 'package:egamebook_server/config.dart';
 import "package:googleapis_auth/auth_browser.dart";
 
 ///
@@ -12,18 +12,18 @@ import "package:googleapis_auth/auth_browser.dart";
 /// which displays AppScraper component.
 ///
 @Component(
-    selector: 'scraper-main',
-    templateUrl: 'scraper_main.html',
+    selector: 'builder-main',
+    templateUrl: 'builder_main.html',
     directives: const [ScraperUi]
 )
-class ScraperMain implements OnInit {
+class BuilderMain implements OnInit {
 
   ///
   /// Authorized client allows us to continue in ScraperUi.
   ///
   AuthClient client;
 
-  ScraperMain();
+  BuilderMain();
 
   ///
   /// Automatically launches OAuth login window.

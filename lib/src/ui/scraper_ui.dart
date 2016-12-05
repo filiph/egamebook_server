@@ -5,7 +5,7 @@ import 'dart:async';
 import 'dart:html';
 import 'package:angular2/core.dart';
 import 'package:archive/archive.dart';
-import 'package:gdrive_scraper/gdrive_scraper/scraper.dart';
+import 'package:egamebook_server/src/gdrive_scraper/scraper.dart';
 import "package:googleapis_auth/auth_browser.dart";
 
 ///

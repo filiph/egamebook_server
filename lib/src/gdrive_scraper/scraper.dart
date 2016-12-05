@@ -1,3 +1,5 @@
+library gdrive_scraper;
+
 import 'dart:async';
 import 'package:angular2/core.dart';
 import 'package:googleapis/drive/v3.dart';
