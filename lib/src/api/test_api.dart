@@ -1,3 +1,6 @@
+/// Example API.
+library api_test;
+
 import 'dart:async';
 import 'package:shelf/shelf.dart';
 

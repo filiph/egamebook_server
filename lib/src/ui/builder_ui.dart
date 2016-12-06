@@ -7,22 +7,17 @@ import 'package:angular2/core.dart';
 import 'package:archive/archive.dart';
 import 'package:egamebook_server/src/gdrive_scraper/scraper.dart';
 import 'package:egamebook_server/src/ui/builder_job_monitor.dart';
-import 'package:fnx_rest/fnx_rest.dart';
 import "package:googleapis_auth/auth_browser.dart";
 
 ///
 /// Form with folderId input and the "start" button.
 ///
 @Component(
-    selector: 'scraper-ui',
-    templateUrl: 'scraper_ui.html',
+    selector: 'builder-ui',
+    templateUrl: 'builder_ui.html',
     directives: const [BuilderJobMonitor]
 )
-class ScraperUi {
-
-  RestClient rest;
-
-  String jobId;
+class BuilderUi {
 
   /// Default folder id, change to the folder ID
   /// you want to scrape most frequently.
@@ -34,15 +29,13 @@ class ScraperUi {
   @ViewChild("output")
   ElementRef output;
 
-  ScraperUi(RestClient root) {
-    rest = root.child("/builder/build-app");
-  }
+  BuilderUi();
 
   bool working = false;
 
+  String jobId;
+
   Future<Null> runScraper() async {
-    jobId = (await rest.post({"nic":"nic"})).data;
-    /*
     try {
       if (working) return null;
       working = true;
@@ -66,11 +59,9 @@ class ScraperUi {
       anchor.click();
 
       return null;
-
     } finally {
       working = false;
     }
-    */
   }
 
   ///

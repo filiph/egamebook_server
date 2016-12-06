@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:angular2/core.dart';
+import 'package:egamebook_server/src/ui/builder_ui.dart';
 import 'package:egamebook_server/src/ui/scraper_ui.dart';
 import 'package:egamebook_server/config.dart';
 import "package:googleapis_auth/auth_browser.dart";
@@ -14,7 +15,7 @@ import "package:googleapis_auth/auth_browser.dart";
 @Component(
     selector: 'builder-main',
     templateUrl: 'builder_main.html',
-    directives: const [ScraperUi]
+    directives: const [ScraperUi, BuilderUi]
 )
 class BuilderMain implements OnInit {
 

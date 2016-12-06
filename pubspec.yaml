@@ -11,7 +11,13 @@ dependencies:
   shelf: "^0.6.7"
   shelf_static: "^0.2.4"
   shelf_rest: "^0.3.4"
+  shelf_cors: "^0.2.1"
   uuid: "^0.5.3"
+  fnx_config: any
+  fnx_rest:
+    git:
+      url: https://github.com/fnx-io/fnx_rest
+      ref: master
 dev_dependencies:
   browser: ^0.10.0
   dart_to_js_script_rewriter: ^1.0.1
@@ -22,4 +28,7 @@ transformers:
     platform_pipes:
     - 'package:angular2/common.dart#COMMON_PIPES'
     entry_points: web/main.dart
+    resolved_identifiers:
+      RestClient: package:fnx_rest/fnx_rest.dart
+- fnx_config
 - dart_to_js_script_rewriter
