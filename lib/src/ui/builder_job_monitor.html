@@ -1,0 +1,7 @@
+<h4>Job {{jobId}}</h4>
+<p>{{jobStatus}}</p>
+
+<p *ngIf="jobResults?.isNotEmpty"><strong>Results:</strong></p>
+<p *ngFor="let r of jobResults"><a target="_blank" href="{{r}}">{{r}}</a></p>
+
+<p class="log" *ngFor="let line of jobLog">{{line}}</p>

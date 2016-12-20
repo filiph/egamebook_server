@@ -1,0 +1,8 @@
+// you will receive this value on
+// https://console.cloud.google.com/apis/credentials
+
+const OAUTH_CLIENT_ID = "blah-blah-example-insert-your-own";
+const OAUTH_SECRET = "sasasasasasassasadsadsadas";
+
+const CLI_CLIENT_ID = "blah-blah-example-insert-your-own";
+const CLI_SECRET = "dksadasjdssasjdksajdkasddw";
