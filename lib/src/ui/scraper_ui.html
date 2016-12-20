@@ -4,11 +4,9 @@
 
     <input type="text" [(ngModel)]="folderId"><br>
 
-    <button (click)="runScraper()">Start!</button>
+    <button *ngIf="jobId == null" (click)="runScraper()">Start!</button>
 
     <p *ngIf="working">I'm working, see console for details and errors.</p>
-
-    <div #output><!-- Download anchor will appear here --></div>
 
 </form>
 

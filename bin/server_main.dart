@@ -1,12 +1,14 @@
+import 'dart:io';
+import 'package:egamebook_server/src/server-util/oauth.dart' as oauth;
+import 'package:egamebook_server/src/sessions/session.dart';
+import 'package:egamebook_server/src/sessions/shelf_simple_session.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_rest/shelf_rest.dart';
 import 'package:shelf_static/shelf_static.dart';
-import 'package:shelf_cors/shelf_cors.dart';
 import 'package:shelf/shelf.dart';
 
 import 'package:egamebook_server/src/api/test_api.dart' as testApi;
 import 'package:egamebook_server/src/api/builder_api.dart' as builderApi;
-
 
 ///
 /// This starts the builder server.
@@ -25,16 +27,43 @@ void main() {
   api.post("/builder/scrape-drive", builderApi.scrapeDrive);
   api.get("/builder/status/{jobId}", builderApi.getJobStatus);
 
-  // static content
+  // oAuth routes
+  rootRouter.get("/oauth-landing", oauth.handleOAuthCode);
+
+  // static content = fallback
   var staticHandler = createStaticHandler('build/web', defaultDocument: 'index.html');
-  rootRouter.add('/', ['GET'], staticHandler, exactMatch: false);
+  rootRouter.add('/', ['GET'], staticHandler, exactMatch: false, middleware: createOAuthGuardMiddleware());
 
   printRoutes(rootRouter);
 
-  io.serve(rootRouter.handler, 'localhost', 8080);
+  // this is the server - universal middlewares and rootRouter
+  var server = const Pipeline()
+      .addMiddleware(logRequests())
+      .addMiddleware(sessionMiddleware(new SimpleSessionStore()))
+      .addHandler(rootRouter.handler);
+
+  io.serve(server, 'localhost', 8080);
 }
 
+///
+/// Guards static (Angular) content, user must be logged in.
+///
+Middleware createOAuthGuardMiddleware() {
 
+  Response enforceOAuth(Request request) {
+    Map<String, Cookie> cookies = request.context["cookies"] as Map<String, Cookie>;
+    if (cookies["session"] == null) {
+      print("Redirecting to google ...");
+      return oauth.redirectToGoogleOAuth(request);
+    }
+    return null;
+  }
+  return createMiddleware(requestHandler: enforceOAuth);
+}
+
+///
+/// Handles OPTIONS requests, handles CORS headers.
+///
 Middleware createCorsHeadersMiddleware() {
 
   const CORS_HEADERS = const {

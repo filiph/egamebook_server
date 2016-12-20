@@ -1,6 +1,7 @@
 library builder;
 
 import 'dart:async';
+
 import 'package:uuid/uuid.dart';
 
 enum JobStatus {
@@ -23,6 +24,9 @@ abstract class Job {
   JobStatus status;
 
   Future<bool> run();
+
+  List<String> results = [];
+
 }
 
 ///
@@ -31,12 +35,52 @@ abstract class Job {
 class DriveScaperJob extends Job {
 
   String driveFolderId;
+  String authToken;
 
-  DriveScaperJob(this.driveFolderId);
+  DriveScaperJob(this.driveFolderId, this.authToken);
 
   Future<bool> run() async {
     try {
       log.add("Starting job #${jobId}");
+
+      DateTime dt = new DateTime.now();
+      String dumpName = "drivedump-${dt.year}${_d2(dt.month)}${_d2(dt.day)}-${_d2(dt.hour)}${_d2(dt.minute)}";
+/*
+      GoogleClient
+
+      AuthClient client = new AuthClient()
+
+      auth.
+
+
+
+
+      Scraper scraper = new Scraper(client);
+
+      // let's wait for scraped files
+      Archive archive = await scraper.scrapeResourcesArchive(folderId, dumpName);
+
+      // ... zip them
+      ZipEncoder enc = new ZipEncoder();
+      List<int> zipped = enc.encode(archive);
+
+      // ... and force download
+      Blob blob = new Blob([zipped], "application/zip");
+      AnchorElement anchor = new AnchorElement(href: Url.createObjectUrl(blob));
+      anchor.append(new Text("Download: ${dumpName}"));
+      anchor.download = dumpName;
+      output.nativeElement.append(anchor);
+      anchor.click();
+
+      return null;
+      */
+
+
+
+
+
+
+
 
       log.add("Doing stuff");
       await new Future.delayed(new Duration(seconds: 5));
@@ -87,6 +131,7 @@ class AppBuilderJob extends Job {
       log.add("Running tool #1");
       await new Future.delayed(new Duration(seconds: 3));
 
+      results.add("http://www.seznam.cz/");
 
       log.add("Running tool #2");
       await new Future.delayed(new Duration(seconds: 3));
@@ -97,6 +142,7 @@ class AppBuilderJob extends Job {
 
       print("in run - job done");
       log.add("Job done!");
+      results.add("http://www.root.cz/");
       return true;
 
     } catch (e, stack) {
@@ -106,4 +152,13 @@ class AppBuilderJob extends Job {
     }
   }
 
+}
+
+
+///
+/// Format to double digit.
+///
+_d2(int number) {
+  if (number == null) return "XX";
+  return number.toString().padLeft(2, '0');
 }

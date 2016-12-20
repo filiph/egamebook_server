@@ -2,12 +2,9 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:html';
+
 import 'package:angular2/core.dart';
-import 'package:archive/archive.dart';
-import 'package:egamebook_server/src/gdrive_scraper/scraper.dart';
 import 'package:egamebook_server/src/ui/builder_job_monitor.dart';
-import "package:googleapis_auth/auth_browser.dart";
 
 ///
 /// Form with folderId input and the "start" button.
@@ -24,7 +21,7 @@ class BuilderUi {
   String folderId = "0BzP0HrbVsp3KWFBOV1lZOU5FUEk";
 
   @Input()
-  AuthClient client;
+  String token;
 
   @ViewChild("output")
   ElementRef output;
@@ -38,6 +35,7 @@ class BuilderUi {
   Future<Null> runScraper() async {
     try {
       if (working) return null;
+      /*
       working = true;
       DateTime dt = new DateTime.now();
       String dumpName = "drivedump-${dt.year}${_d2(dt.month)}${_d2(dt.day)}-${_d2(dt.hour)}${_d2(dt.minute)}";
@@ -57,7 +55,7 @@ class BuilderUi {
       anchor.download = dumpName;
       output.nativeElement.append(anchor);
       anchor.click();
-
+      */
       return null;
     } finally {
       working = false;

@@ -1,8 +1,9 @@
 import 'dart:async';
+
 import 'package:angular2/core.dart';
+import 'package:egamebook_server/config.dart';
 import 'package:egamebook_server/src/ui/builder_ui.dart';
 import 'package:egamebook_server/src/ui/scraper_ui.dart';
-import 'package:egamebook_server/config.dart';
 import "package:googleapis_auth/auth_browser.dart";
 
 ///
@@ -22,7 +23,7 @@ class BuilderMain implements OnInit {
   ///
   /// Authorized client allows us to continue in ScraperUi.
   ///
-  AuthClient client;
+  AccessCredentials credentials;
 
   BuilderMain();
 
@@ -38,8 +39,9 @@ class BuilderMain implements OnInit {
     BrowserOAuth2Flow flow = await createImplicitBrowserFlow(id, scopes);
 
     // we have the authorized client!
-    client = await flow.clientViaUserConsent();
+    credentials = await flow.obtainAccessCredentialsViaUserConsent();
 
     flow.close();
   }
+
 }

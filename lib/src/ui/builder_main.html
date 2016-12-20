@@ -1,21 +1,21 @@
 <h1>Drive scraper</h1>
 
 <!-- Not logged in yet ...-->
-<p *ngIf="client == null">Please log-in ...</p>
+<p *ngIf="credentials == null">Please log-in ...</p>
 
 <!-- ... and now is logged in -->
-<div *ngIf="client != null">
+<div *ngIf="credentials != null">
 
     <h2>Welcome!</h2>
 
     <div class="row">
         <div class="panel">
             <h3>eGameBook builder</h3>
-            <builder-ui [client]="client"></builder-ui>
+            <builder-ui [token]="credentials.accessToken.data"></builder-ui>
         </div>
         <div class="panel">
             <h3>Drive scraper</h3>
-            <scraper-ui [client]="client"></scraper-ui>
+            <scraper-ui [token]="credentials.accessToken.data"></scraper-ui>
         </div>
 
     </div>

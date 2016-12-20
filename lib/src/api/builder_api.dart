@@ -1,8 +1,8 @@
 /// Build server API, get's called from Angular UI.
 library api;
 
-import 'dart:async';
 import 'dart:convert';
+
 import 'package:egamebook_server/src/builder/builder.dart';
 import 'package:shelf/shelf.dart';
 
@@ -21,7 +21,7 @@ Response buildApp(Request request) {
 /// Api method, starts a new job.
 ///
 Response scrapeDrive(Request request) {
-  DriveScaperJob builderJob = new DriveScaperJob(null);
+  DriveScaperJob builderJob = new DriveScaperJob(null, null);
   return _runJobImpl(builderJob);
 }
 
@@ -35,7 +35,8 @@ Response getJobStatus(String jobId) {
   }
   return new Response.ok(JSON.encode({
     "status":job.status.toString(),
-    "log":job.log
+    "log":job.log,
+    "results": job.results
   }));
 }
 

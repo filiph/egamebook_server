@@ -1,11 +1,11 @@
 library gdrive_scraper;
 
 import 'dart:async';
-import 'package:angular2/core.dart';
-import 'package:googleapis/drive/v3.dart';
-import "package:googleapis_auth/auth_browser.dart";
-import 'package:googleapis/drive/v3.dart' as d;
+
 import 'package:archive/archive.dart';
+import 'package:googleapis/drive/v3.dart';
+import 'package:googleapis/drive/v3.dart' as d;
+import 'package:googleapis_auth/auth.dart';
 
 const MIMETYPE_FOLDER = "application/vnd.google-apps.folder";
 const MIMETYPE_DOC = "application/vnd.google-apps.document";

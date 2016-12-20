@@ -2,7 +2,8 @@
 
 # Custom:
 
-gdrive_scraper/lib/config.dart
+lib/config.dart
+.cli_access_credentials.private
 
 .idea/
 egamebook_server.iml

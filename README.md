@@ -1,5 +1,23 @@
 Server side, tooling, etc.
 
+Before you do anything else copy `gdrive_scraper/lib/config.dart-example`
+to `gdrive_scraper/lib/config.dart` and fill it with values obtained from
+https://console.cloud.google.com/apis/credentials
+
+You will need two client ID's - for web client and for CLI client (Other).
+
+# CLI scraper
+
+Run:
+
+    dart bin/scraper_main.dart
+        
+...when running for the first time, you will need to open your browser and obtain oAuth code.
+This code is then used to obtain access credentials for your gDrive. Access credentials
+are stored in ".cli_access_credentials.private" file. Keep it secret, keep it safe!
+
+Just follow instructions on the screen.
+
 # Build server
 
 Download dependencies:
