@@ -17,6 +17,32 @@ void main() {
 
   Router rootRouter = router();
 
+  buildApiRoutes(rootRouter);
+
+  // oAuth routes
+  rootRouter.get("/oauth-landing", oauth.handleOAuthCode);
+
+  // static content = fallback
+  var staticHandler = createStaticHandler('build/web', defaultDocument: 'index.html');
+  rootRouter.add('/', ['GET'], staticHandler, exactMatch: false, middleware: oauth.createOAuthGuardMiddleware());
+
+  // debug
+  printRoutes(rootRouter);
+
+  // and this is the server - universal middlewares and rootRouter
+  var server = const Pipeline()
+      .addMiddleware(logRequests())
+      .addMiddleware(sessionMiddleware(new SimpleSessionStore()))
+      .addHandler(rootRouter.handler);
+
+  io.serve(server, 'localhost', 8080);
+}
+
+///
+/// Define routes and handlers for API calls.
+///
+void buildApiRoutes(Router<Router> rootRouter) {
+
   // ignore: strong_mode_down_cast_composite
   Router api = rootRouter.child("/api/v1", middleware: createCorsHeadersMiddleware());
 
@@ -27,38 +53,6 @@ void main() {
   api.post("/builder/scrape-drive", builderApi.scrapeDrive);
   api.get("/builder/status/{jobId}", builderApi.getJobStatus);
 
-  // oAuth routes
-  rootRouter.get("/oauth-landing", oauth.handleOAuthCode);
-
-  // static content = fallback
-  var staticHandler = createStaticHandler('build/web', defaultDocument: 'index.html');
-  rootRouter.add('/', ['GET'], staticHandler, exactMatch: false, middleware: createOAuthGuardMiddleware());
-
-  printRoutes(rootRouter);
-
-  // this is the server - universal middlewares and rootRouter
-  var server = const Pipeline()
-      .addMiddleware(logRequests())
-      .addMiddleware(sessionMiddleware(new SimpleSessionStore()))
-      .addHandler(rootRouter.handler);
-
-  io.serve(server, 'localhost', 8080);
-}
-
-///
-/// Guards static (Angular) content, user must be logged in.
-///
-Middleware createOAuthGuardMiddleware() {
-
-  Response enforceOAuth(Request request) {
-    Map<String, Cookie> cookies = request.context["cookies"] as Map<String, Cookie>;
-    if (cookies["session"] == null) {
-      print("Redirecting to google ...");
-      return oauth.redirectToGoogleOAuth(request);
-    }
-    return null;
-  }
-  return createMiddleware(requestHandler: enforceOAuth);
 }
 
 ///

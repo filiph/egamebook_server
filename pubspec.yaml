@@ -14,6 +14,8 @@ dependencies:
   uuid: "^0.5.3"
   fnx_config: any
   fnx_rest: any
+  http: any
+  convert: any
 dev_dependencies:
   browser: ^0.10.0
   dart_to_js_script_rewriter: ^1.0.1
