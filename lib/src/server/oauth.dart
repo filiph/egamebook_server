@@ -1,20 +1,25 @@
+library server_oauth;
+
 import 'dart:async';
-import 'dart:io';
-import 'package:egamebook_server/config.dart';
-import 'package:shelf/shelf.dart';
-import 'package:egamebook_server/src/sessions/session.dart';
-import 'package:http/http.dart' as http;
-import 'package:googleapis_auth/auth_io.dart';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:egamebook_server/config.dart';
+import 'package:egamebook_server/src/server/util/session.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:http/http.dart' as http;
+import 'package:shelf/shelf.dart';
+import 'package:shelf_rest/shelf_rest.dart';
 
+void buildRoutesForOAuth(Router<Router> rootRouter) {
+  rootRouter.get("/oauth-landing", handleOAuthCode);
+}
+
+///
+/// Guards static (Angular) content, user must be "logged in".
+/// If not logged in, we will redirect him to Google oAuth.
+///
 /// See https://developers.google.com/identity/protocols/OAuth2WebServer?hl=fr
-///
-
-
-///
-/// Guards static (Angular) content, user must be logged in.
-/// If not logged in we will redirect him to Google oAuth.
 ///
 Middleware createOAuthGuardMiddleware() {
 
@@ -24,7 +29,7 @@ Middleware createOAuthGuardMiddleware() {
       Session sess = session(request);
       if (sess["accessCredentials"] == null) {
         print("Redirecting to google ...");
-        return renderRedirectToGoogleOAuthResponse(request);
+        return _createRedirectToGoogleOAuthResponse(request);
       } else {
         print(sess["accessCredentials"]);
         return null;
@@ -38,13 +43,13 @@ Middleware createOAuthGuardMiddleware() {
 ///
 /// Constructs URL for redirect to Google's oAuth server.
 ///
-Response renderRedirectToGoogleOAuthResponse(Request request) {
+Response _createRedirectToGoogleOAuthResponse(Request request) {
 
   Uri redirectResponse = Uri.parse("https://accounts.google.com/o/oauth2/v2/auth");
 
   redirectResponse = redirectResponse.replace(queryParameters: {
     "scope": "https://www.googleapis.com/auth/drive.readonly",
-    "redirect_uri": renderRedirectUriFromRequest(request),
+    "redirect_uri": _renderOauthLandingUriFromRequest(request),
     "client_id": OAUTH_CLIENT_ID,
     "response_type": "code"
   });
@@ -66,7 +71,7 @@ Future<Response> handleOAuthCode(Request request) async {
     "code": code,
     "client_id": OAUTH_CLIENT_ID,
     "client_secret": OAUTH_SECRET,
-    "redirect_uri": renderRedirectUriFromRequest(request),
+    "redirect_uri": _renderOauthLandingUriFromRequest(request),
     "grant_type": "authorization_code"
   };
 
@@ -89,13 +94,14 @@ Future<Response> handleOAuthCode(Request request) async {
 
   ClientId clientId = new ClientId(OAUTH_CLIENT_ID, OAUTH_SECRET);
   http.Client client = new http.Client();
-  AuthClient authorizedHttpClient = autoRefreshingClient(clientId, accessCredentials, client);
+  //AuthClient authorizedHttpClient = autoRefreshingClient(clientId, accessCredentials, client);
+  print("Print: ${sess.id}");
 
   // TODO: co s tim dal
 
   return new Response.found("/");
 }
 
-String renderRedirectUriFromRequest(Request request) {
+String _renderOauthLandingUriFromRequest(Request request) {
   return request.requestedUri.replace(path: "/oauth-landing", queryParameters: {}).toString().replaceFirst("?", "");
 }

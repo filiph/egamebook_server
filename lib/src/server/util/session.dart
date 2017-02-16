@@ -1,9 +1,9 @@
 library session;
-import 'package:shelf/shelf.dart' as shelf;
-import 'dart:math' as math;
-import 'package:crypto/crypto.dart';
-import 'dart:collection';
 import 'dart:async';
+import 'dart:collection';
+import 'dart:math' as math;
+
+import 'package:shelf/shelf.dart' as shelf;
 import 'package:uuid/uuid.dart';
 
 // Key used to store the session in the shelf context

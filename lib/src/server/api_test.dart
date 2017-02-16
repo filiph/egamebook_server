@@ -1,9 +1,5 @@
 /// Example API.
-library api_test;
-
-import 'dart:async';
-
-import 'package:shelf/shelf.dart';
+part of server_api;
 
 Response getTest(Request request) {
   return new Response.ok("API is alive!");

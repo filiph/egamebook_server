@@ -1,18 +1,12 @@
 /// Build server API, get's called from Angular UI.
-library api;
-
-import 'dart:convert';
-
-import 'package:egamebook_server/src/builder/builder.dart';
-import 'package:shelf/shelf.dart';
+part of server_api;
 
 Map<String, AppBuilderJob> _JOB_REPOSITORY = {};
-
 
 ///
 /// Api method, starts a new job.
 ///
-Response buildApp(Request request) {
+Response buildAppApiMethod(Request request) {
   AppBuilderJob builderJob = new AppBuilderJob(null, null);
   return _runJobImpl(builderJob);
 }
@@ -20,7 +14,7 @@ Response buildApp(Request request) {
 ///
 /// Api method, starts a new job.
 ///
-Response scrapeDrive(Request request) {
+Response scrapeDriveApiMethod(Request request) {
   DriveScaperJob builderJob = new DriveScaperJob(null, null);
   return _runJobImpl(builderJob);
 }
@@ -28,7 +22,7 @@ Response scrapeDrive(Request request) {
 ///
 /// Api method, returns job status by it's id.
 ///
-Response getJobStatus(String jobId) {
+Response getJobStatusApiMethod(String jobId) {
   AppBuilderJob job = _JOB_REPOSITORY[jobId];
   if (job == null) {
     return new Response.notFound(jobId);
