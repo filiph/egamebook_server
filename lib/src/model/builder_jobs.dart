@@ -1,33 +1,11 @@
-library builder;
+library builder_jobs;
 
 import 'dart:async';
 
-import 'package:uuid/uuid.dart';
-
-enum JobStatus {
-  IN_PROGRESS,
-  DONE,
-  FAILED
-}
-
-///
-/// Long term job running on the server.
-///
-abstract class Job {
-
-  static final Uuid uuidGenerator = new Uuid();
-
-  String jobId = uuidGenerator.v1().toString();
-
-  List<String> log = [];
-
-  JobStatus status;
-
-  Future<bool> run();
-
-  List<String> results = [];
-
-}
+import 'package:archive/archive.dart';
+import 'package:egamebook_server/src/gdrive_scraper/scraper.dart';
+import 'package:egamebook_server/src/model/builder_model.dart';
+import 'package:googleapis_auth/auth_io.dart';
 
 ///
 /// Scrape the drive and create snapshot
@@ -35,55 +13,30 @@ abstract class Job {
 class DriveScaperJob extends Job {
 
   String driveFolderId;
-  String authToken;
+  AuthClient authorizedHttpClient;
 
-  DriveScaperJob(this.driveFolderId, this.authToken);
+  DriveScaperJob(this.driveFolderId, this.authorizedHttpClient);
 
   Future<bool> run() async {
     try {
       log.add("Starting job #${jobId}");
 
       DateTime dt = new DateTime.now();
-      String dumpName = "drivedump-${dt.year}${_d2(dt.month)}${_d2(dt.day)}-${_d2(dt.hour)}${_d2(dt.minute)}";
-/*
-      GoogleClient
+      String dumpName = "drivedump-${dt.year}${_d2(dt.month)}${_d2(dt.day)}-${_d2(dt.hour)}${_d2(dt.minute)}.zip";
 
-      AuthClient client = new AuthClient()
+      Scraper scraper = new Scraper(authorizedHttpClient);
 
-      auth.
+      log.add("Scraping, please wait ...");
+      Archive archive = await scraper.scrapeResourcesArchive(driveFolderId, dumpName);
 
+      log.add("All data downloaded, zipping ...");
 
-
-
-      Scraper scraper = new Scraper(client);
-
-      // let's wait for scraped files
-      Archive archive = await scraper.scrapeResourcesArchive(folderId, dumpName);
-
-      // ... zip them
+      // ... zip them files
       ZipEncoder enc = new ZipEncoder();
       List<int> zipped = enc.encode(archive);
+      log.add("Uploading ${zipped.length} bytes to GCS as ${dumpName}...");
 
-      // ... and force download
-      Blob blob = new Blob([zipped], "application/zip");
-      AnchorElement anchor = new AnchorElement(href: Url.createObjectUrl(blob));
-      anchor.append(new Text("Download: ${dumpName}"));
-      anchor.download = dumpName;
-      output.nativeElement.append(anchor);
-      anchor.click();
-
-      return null;
-      */
-
-
-
-
-
-
-
-
-      log.add("Doing stuff");
-      await new Future.delayed(new Duration(seconds: 5));
+      results.add("http://seznam.cz/");
 
       log.add("Job done!");
       return true;

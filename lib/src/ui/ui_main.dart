@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:angular2/core.dart';
 import 'package:egamebook_server/src/ui/builder_ui.dart';
 import 'package:egamebook_server/src/ui/scraper_ui.dart';
@@ -12,15 +10,8 @@ import 'package:egamebook_server/src/ui/scraper_ui.dart';
     templateUrl: 'ui_main.html',
     directives: const [ScraperUi, BuilderUi]
 )
-class UiMain implements OnInit {
+class UiMain {
 
   UiMain();
-
-  ///
-  /// Automatically launches OAuth login window.
-  ///
-  @override
-  Future ngOnInit() async {
-  }
 
 }

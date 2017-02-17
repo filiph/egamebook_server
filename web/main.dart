@@ -3,6 +3,7 @@
 
 import 'package:angular2/core.dart';
 import 'package:angular2/platform/browser.dart';
+import 'package:egamebook_server/src/ui/exception_handler.dart';
 import 'package:egamebook_server/src/ui/ui_main.dart';
 import 'package:fnx_rest/fnx_rest.dart';
 import 'package:fnx_config/fnx_config_read.dart';
@@ -25,11 +26,19 @@ main() {
     sessionId = u.queryParameters["debugSessionId"];
   }
 
-  // connection to builder server
-  RestClient apiRoot = new HttpRestClient.root(fnxConfig()["apiRoot"]);
-  apiRoot.setHeader("Authorization", sessionId);
+  if (sessionId == null) {
+    window.alert("Your sessionId is empty, I cannot continue. See main.dart for more info.");
 
-  // start Angular UI!
-  bootstrap(UiMain, [provide(RestClient, useValue: apiRoot)]);
+  } else {
+    // connection to builder server
+    RestClient apiRoot = new HttpRestClient.root(fnxConfig()["apiRoot"]);
+    apiRoot.setHeader("Authorization", sessionId);
+
+    // start Angular UI!
+    bootstrap(UiMain, [
+      provide(RestClient, useValue: apiRoot),
+      provide(ExceptionHandler, useValue: new CustomExceptionHandler())
+    ]);
+  }
 
 }

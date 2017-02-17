@@ -157,5 +157,9 @@ class SimpleSessionStore extends SessionStore {
              'set-cookie': sessionIdCookie.toString() });
   }
 
+
+  Session getSessionById(String sessionId) {
+     return _sessionMap[sessionId];
+  }
 }
 

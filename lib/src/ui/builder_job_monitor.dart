@@ -3,8 +3,9 @@
 
 import 'dart:async';
 
+import 'dart:html';
 import 'package:angular2/core.dart';
-import 'package:egamebook_server/src/model/builder.dart';
+import 'package:egamebook_server/src/model/builder_model.dart';
 import 'package:fnx_rest/fnx_rest.dart';
 
 ///

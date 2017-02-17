@@ -72,7 +72,8 @@ Future<Response> handleOAuthCode(Request request) async {
     "client_id": OAUTH_CLIENT_ID,
     "client_secret": OAUTH_SECRET,
     "redirect_uri": _renderOauthLandingUriFromRequest(request),
-    "grant_type": "authorization_code"
+    "grant_type": "authorization_code",
+    "access_type": "offline"
   };
 
   http.Response response = await http.post(url, body: tokenRetreivePayload);
@@ -89,16 +90,18 @@ Future<Response> handleOAuthCode(Request request) async {
 
   DateTime expires = new DateTime.now().toUtc().add(new Duration(seconds: respParsed["expires_in"]));
   AccessToken token = new AccessToken(respParsed["token_type"], respParsed["access_token"], expires);
-  AccessCredentials accessCredentials = new AccessCredentials(token, null, []);
+  AccessCredentials accessCredentials = new AccessCredentials(token, respParsed["refresh_token"], []);
   sess["accessCredentials"] = accessCredentials;
 
   ClientId clientId = new ClientId(OAUTH_CLIENT_ID, OAUTH_SECRET);
   http.Client client = new http.Client();
-  //AuthClient authorizedHttpClient = autoRefreshingClient(clientId, accessCredentials, client);
-  print("Print: ${sess.id}");
+  AuthClient authorizedHttpClient = autoRefreshingClient(clientId, accessCredentials, client);
 
-  // TODO: co s tim dal
+  print("sessionId="+sess.id);
 
+  sess["authorizedHttpClient"] = authorizedHttpClient;
+
+  // ... and redirect to index.html
   return new Response.found("/");
 }
 

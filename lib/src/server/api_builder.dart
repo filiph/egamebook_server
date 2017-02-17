@@ -14,9 +14,19 @@ Response buildAppApiMethod(Request request) {
 ///
 /// Api method, starts a new job.
 ///
-Response scrapeDriveApiMethod(Request request) {
-  DriveScaperJob builderJob = new DriveScaperJob(null, null);
+Future<Response> scrapeDriveApiMethod(Request request) async {
+  Map<String, Object> requestPayload = (JSON.decode(await request.readAsString()) as Map<String,Object>);
+  String folderId = requestPayload["folderId"] as String;
+  AuthClient client = _getClientBySessionId(request);
+  DriveScaperJob builderJob = new DriveScaperJob(folderId, client);
   return _runJobImpl(builderJob);
+}
+
+AuthClient _getClientBySessionId(Request request) {
+  String sessionId = request.headers["Authorization"];
+  Session sess = SESSION_STORE.getSessionById(sessionId);
+  if (sess == null) throw "Session was not found, refresh your web page";
+  return sess["authorizedHttpClient"];
 }
 
 ///
@@ -42,7 +52,6 @@ Response _runJobImpl(Job job) {
   print("Running job");
   _JOB_REPOSITORY[job.jobId] = job;
   job.status = JobStatus.IN_PROGRESS;
-  print("run");
   job.run().then((bool jobResult) {
     if (jobResult) {
       job.status = JobStatus.DONE;

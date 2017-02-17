@@ -29,19 +29,21 @@ class ScraperUi {
   ElementRef output;
 
   ScraperUi(RestClient root) {
-    rest = root.child("/builder/build-app");
+    rest = root.child("/builder/scrape-drive");
   }
 
-  bool working = false;
-
   Future<Null> runScraper() async {
-    if (jobId != null) {
+    if (jobId == null) {
       // let's schedule scraper job and receive jobId
       RestResult resp = await rest.post({
         "folderId":folderId
       });
       jobId = resp.data;
     }
+  }
+
+  void reset() {
+    jobId = null;
   }
 
 }

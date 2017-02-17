@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:egamebook_server/src/server/api.dart';
+import 'package:egamebook_server/src/server/constants.dart';
 import 'package:egamebook_server/src/server/oauth.dart';
 import 'package:egamebook_server/src/server/static.dart';
 import 'package:egamebook_server/src/server/util/session.dart';
@@ -8,8 +9,6 @@ import 'package:egamebook_server/src/server/util/shelf_simple_session.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_rest/shelf_rest.dart';
 import 'package:shelf/shelf.dart';
-
-SimpleSessionStore SESSION_STORE = new SimpleSessionStore();
 
 ///
 /// This starts the builder server.
@@ -19,7 +18,7 @@ void main() {
   Router rootRouter = router();
 
   // routing
-  buildRoutingForApi(rootRouter);
+  buildRoutesForApi(rootRouter);
   buildRoutesForOAuth(rootRouter);
   buildRoutesForStaticContent(rootRouter);
 

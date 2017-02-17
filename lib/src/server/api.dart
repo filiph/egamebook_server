@@ -1,19 +1,24 @@
 library server_api;
 
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:shelf/shelf.dart';
-import 'dart:async';
-import 'package:shelf_rest/shelf_rest.dart';
-import 'package:egamebook_server/src/model/builder.dart';
+import 'package:egamebook_server/src/model/builder_jobs.dart';
+import 'package:egamebook_server/src/model/builder_model.dart';
 
-part 'package:egamebook_server/src/server/api_test.dart';
+import 'package:egamebook_server/src/server/constants.dart';
+import 'package:egamebook_server/src/server/util/session.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:shelf/shelf.dart';
+import 'package:shelf_rest/shelf_rest.dart';
+
 part 'package:egamebook_server/src/server/api_builder.dart';
+part 'package:egamebook_server/src/server/api_test.dart';
 
 ///
 /// Define routes and handlers for API calls.
 ///
-void buildRoutingForApi(Router<Router> rootRouter) {
+void buildRoutesForApi(Router<Router> rootRouter) {
 
   // ignore: strong_mode_down_cast_composite
   Router api = rootRouter.child("/api/v1", middleware: _createCorsHeadersMiddleware());
@@ -28,6 +33,16 @@ void buildRoutingForApi(Router<Router> rootRouter) {
 
 }
 
+Handler catchAll(Handler handler) {
+  return (Request r) {
+    try {
+      return handler(r);
+    } catch (e, stack) {
+      return new Response.internalServerError(body:e.toString());
+    }
+  };
+}
+
 ///
 /// Handles OPTIONS requests, handles CORS headers.
 ///
@@ -36,7 +51,7 @@ Middleware _createCorsHeadersMiddleware() {
   // FIXME: Origin * nebude to prave orechove!
   const CORS_HEADERS = const {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type'
+    'Access-Control-Allow-Headers': 'Accept, Authorization, Content-Type'
   };
 
   // Handle preflight (OPTIONS) requests by just adding headers and an empty
