@@ -21,7 +21,7 @@ class Scraper {
 
   Scraper(this.client);
 
-  Future<Archive> scrapeResourcesArchive(String folderId, String archiveRootName) async {
+  Future<Archive> scrapeResourcesArchive(String folderId, {String archiveRootName: null}) async {
     // result archive
     Archive archive = new Archive();
 
@@ -41,12 +41,20 @@ class Scraper {
     // query folder contents
     d.FileList l = await api.files.list(pageSize: 1000, q: "'$folderId' in parents AND (mimeType='$MIMETYPE_FOLDER' or mimeType='$MIMETYPE_DOC')");
 
+    // context is not empty, we are creating
+    // files in current directory
+    if (context == null) {
+      context = "";
+    } else {
+      context = context + "/";
+    }
+    
     for (var i = 0; i < l.files.length; ++i) {
       var f = l.files[i];
 
       if (f.mimeType == MIMETYPE_FOLDER) {
         // let's dive deeper and wait for result
-        await _scrapeFolder(api, archive, f.id, context + "/" + f.name);
+        await _scrapeFolder(api, archive, f.id, context + f.name);
       } else if (f.mimeType == MIMETYPE_DOC) {
         // export to TXT and add to archive
         d.Media downloaded = await api.files.export(f.id, "text/plain", downloadOptions: d.DownloadOptions.FullMedia);
@@ -55,7 +63,7 @@ class Scraper {
         chunks.forEach((List<int> chunk) {
           data.addAll(chunk);
         });
-        archive.addFile(new ArchiveFile(context + "/" + f.name + ".txt", data.length, data));
+        archive.addFile(new ArchiveFile(context + f.name + ".txt", data.length, data));
       } else {
         throw new Exception("Unknown mimeType: ${f.mimeType}");
       }

@@ -8,6 +8,7 @@ import 'package:egamebook_server/src/gdrive_scraper/scraper.dart';
 import 'package:egamebook_server/src/util.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart';
+import 'package:args/args.dart';
 
 const SERIALIZED_ACCESS_CREDENTIALS = ".cli_access_credentials.private";
 
@@ -16,6 +17,29 @@ const SERIALIZED_ACCESS_CREDENTIALS = ".cli_access_credentials.private";
 ///
 Future main(List<String> arguments) async {
 
+  ArgParser parser = setUpArgParser();
+  ArgResults res = parser.parse(arguments);
+  if (res['help']) {
+    print("Usage:");
+    print(parser.usage);
+    return;
+  }
+
+  String output = res['output'];
+  io.File outputDir;
+  if (output != null) {
+    outputDir = new io.File(output);
+    io.FileStat stat = outputDir.statSync();
+    if (stat.type != io.FileSystemEntityType.DIRECTORY) {
+      print("${outputDir.absolute} is not a directory");
+      io.exit(1);
+      return;
+    }
+  }
+
+  // Am I zipping, or downloading to a folder?
+  bool zipping = outputDir == null;
+  
   // folder to scrape, change if you need to
   const folderId = "0BzP0HrbVsp3KWFBOV1lZOU5FUEk";
 
@@ -36,24 +60,34 @@ Future main(List<String> arguments) async {
 
   Scraper scraper = new Scraper(authorizedHttpClient);
 
-  String dumpName = renderDriveDumpFilename(folderId);
+  String dumpName = zipping ? renderDriveDumpFilename(folderId) : null;
 
   // let's wait for scraped files
   print("Scraping, please wait ...");
-  Archive archive = await scraper.scrapeResourcesArchive(folderId, dumpName);
+  Archive archive = await scraper.scrapeResourcesArchive(folderId, archiveRootName: dumpName);
 
   // save credentials
   serializeCredentialsForNextTime(authorizedHttpClient.credentials);
 
-  // ... zip them files
-  ZipEncoder enc = new ZipEncoder();
-  List<int> zipped = enc.encode(archive);
+  if (zipping) {
+    // ... zip them files
+    ZipEncoder enc = new ZipEncoder();
+    List<int> zipped = enc.encode(archive);
 
-  // flush data to a ZIP file
-  String zipFileName = "$dumpName.zip";
-  io.File f = new io.File(zipFileName);
-  f.writeAsBytesSync(zipped);
-  print("... and here it is: $zipFileName");
+    // flush data to a ZIP file
+    String zipFileName = "$dumpName.zip";
+    io.File f = new io.File(zipFileName);
+    f.writeAsBytesSync(zipped, flush: true);
+    print("... and here it is: $zipFileName");
+
+  } else {
+    archive.forEach((ArchiveFile f) {
+      io.File out = new io.File(outputDir.absolute.path+"/"+f.name);
+      out.parent.createSync(recursive: true);
+      out.writeAsBytesSync(f.content, flush: true);
+    });
+    print("... and here it is: ${outputDir.absolute.path}");
+  }
 }
 
 ///
@@ -97,4 +131,11 @@ AccessCredentials deserializePreviousCredentials() {
   AccessCredentials credentials = new AccessCredentials(accessToken, data["refreshToken"], data["scopes"] as List<String>);
   return credentials;
 
+}
+
+ArgParser setUpArgParser() {
+  ArgParser p = new ArgParser();
+  p.addOption("output", abbr: "o", help: "Directory where to put downloaded files. If not provided, scraper will generate a zip file.");
+  p.addFlag("help", abbr: "h", help: "Prints this message", negatable: false);
+  return p;
 }

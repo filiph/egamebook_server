@@ -27,7 +27,7 @@ class DriveScaperJob extends Job {
       Scraper scraper = new Scraper(authorizedHttpClient);
 
       log.add("Scraping, please wait ...");
-      Archive archive = await scraper.scrapeResourcesArchive(driveFolderId, dumpName);
+      Archive archive = await scraper.scrapeResourcesArchive(driveFolderId, archiveRootName: dumpName);
 
       log.add("All data downloaded, zipping ...");
 
