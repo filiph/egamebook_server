@@ -25,27 +25,25 @@ class ScraperUi {
   /// you want to scrape most frequently.
   String folderId = "0BzP0HrbVsp3KWFBOV1lZOU5FUEk";
 
-  @Input()
-  String token;
-
   @ViewChild("output")
   ElementRef output;
 
   ScraperUi(RestClient root) {
-    rest = root.child("/builder/build-app");
+    rest = root.child("/builder/scrape-drive");
   }
 
-  bool working = false;
-
   Future<Null> runScraper() async {
-    if (jobId != null) {
+    if (jobId == null) {
       // let's schedule scraper job and receive jobId
       RestResult resp = await rest.post({
-        "folderId":folderId,
-        "authToken":token
+        "folderId":folderId
       });
       jobId = resp.data;
     }
+  }
+
+  void reset() {
+    jobId = null;
   }
 
 }

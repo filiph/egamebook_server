@@ -1,13 +1,18 @@
 <form>
 
-    <label>Drive folder id</label><br>
+    <p>
+        <label>Drive folder id</label><br>
+        <input type="text" [(ngModel)]="folderId">
+    </p>
 
-    <input type="text" [(ngModel)]="folderId"><br>
-
-    <button *ngIf="jobId == null" (click)="runScraper()">Start!</button>
-
-    <p *ngIf="working">I'm working, see console for details and errors.</p>
+    <p>
+        <button *ngIf="jobId == null" (click)="runScraper()">Make snapshot of this folder!</button>
+    </p>
 
 </form>
 
 <builder-job-monitor *ngIf="jobId != null" [jobId]="jobId"></builder-job-monitor>
+
+<p *ngIf="jobId != null" >
+    <button (click)="reset()">Reset!</button>
+</p>

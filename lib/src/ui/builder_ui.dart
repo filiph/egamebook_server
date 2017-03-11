@@ -20,9 +20,6 @@ class BuilderUi {
   /// you want to scrape most frequently.
   String folderId = "0BzP0HrbVsp3KWFBOV1lZOU5FUEk";
 
-  @Input()
-  String token;
-
   @ViewChild("output")
   ElementRef output;
 

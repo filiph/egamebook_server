@@ -1,18 +1,12 @@
 /// Build server API, get's called from Angular UI.
-library api;
-
-import 'dart:convert';
-
-import 'package:egamebook_server/src/builder/builder.dart';
-import 'package:shelf/shelf.dart';
+part of server_api;
 
 Map<String, AppBuilderJob> _JOB_REPOSITORY = {};
-
 
 ///
 /// Api method, starts a new job.
 ///
-Response buildApp(Request request) {
+Response buildAppApiMethod(Request request) {
   AppBuilderJob builderJob = new AppBuilderJob(null, null);
   return _runJobImpl(builderJob);
 }
@@ -20,15 +14,25 @@ Response buildApp(Request request) {
 ///
 /// Api method, starts a new job.
 ///
-Response scrapeDrive(Request request) {
-  DriveScaperJob builderJob = new DriveScaperJob(null, null);
+Future<Response> scrapeDriveApiMethod(Request request) async {
+  Map<String, Object> requestPayload = (JSON.decode(await request.readAsString()) as Map<String,Object>);
+  String folderId = requestPayload["folderId"] as String;
+  AuthClient client = _getClientBySessionId(request);
+  DriveScaperJob builderJob = new DriveScaperJob(folderId, client);
   return _runJobImpl(builderJob);
+}
+
+AuthClient _getClientBySessionId(Request request) {
+  String sessionId = request.headers["Authorization"];
+  Session sess = SESSION_STORE.getSessionById(sessionId);
+  if (sess == null) throw "Session was not found, refresh your web page";
+  return sess["authorizedHttpClient"];
 }
 
 ///
 /// Api method, returns job status by it's id.
 ///
-Response getJobStatus(String jobId) {
+Response getJobStatusApiMethod(String jobId) {
   AppBuilderJob job = _JOB_REPOSITORY[jobId];
   if (job == null) {
     return new Response.notFound(jobId);
@@ -48,7 +52,6 @@ Response _runJobImpl(Job job) {
   print("Running job");
   _JOB_REPOSITORY[job.jobId] = job;
   job.status = JobStatus.IN_PROGRESS;
-  print("run");
   job.run().then((bool jobResult) {
     if (jobResult) {
       job.status = JobStatus.DONE;
