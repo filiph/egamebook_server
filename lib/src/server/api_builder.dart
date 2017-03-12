@@ -33,7 +33,7 @@ AuthClient _getClientBySessionId(Request request) {
 /// Api method, returns job status by it's id.
 ///
 Response getJobStatusApiMethod(String jobId) {
-  AppBuilderJob job = _JOB_REPOSITORY[jobId];
+  Job job = _JOB_REPOSITORY[jobId];
   if (job == null) {
     return new Response.notFound(jobId);
   }
