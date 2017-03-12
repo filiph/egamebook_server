@@ -48,7 +48,7 @@ Response _createRedirectToGoogleOAuthResponse(Request request) {
   Uri redirectResponse = Uri.parse("https://accounts.google.com/o/oauth2/v2/auth");
 
   redirectResponse = redirectResponse.replace(queryParameters: {
-    "scope": "https://www.googleapis.com/auth/drive.readonly",
+    "scope": "https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/devstorage.read_write",
     "redirect_uri": _renderOauthLandingUriFromRequest(request),
     "client_id": OAUTH_CLIENT_ID,
     "response_type": "code"

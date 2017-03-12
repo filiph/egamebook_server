@@ -3,7 +3,6 @@ library gdrive_scraper;
 import 'dart:async';
 
 import 'package:archive/archive.dart';
-import 'package:googleapis/drive/v3.dart';
 import 'package:googleapis/drive/v3.dart' as d;
 import 'package:googleapis_auth/auth.dart';
 
@@ -37,7 +36,7 @@ class Scraper {
   ///
   /// Recursive method for fetching a folder and its contents.
   ///
-  Future<Null> _scrapeFolder(DriveApi api, Archive archive, String folderId, String context) async {
+  Future<Null> _scrapeFolder(d.DriveApi api, Archive archive, String folderId, String context) async {
     // query folder contents
     d.FileList l = await api.files.list(pageSize: 1000, q: "'$folderId' in parents AND (mimeType='$MIMETYPE_FOLDER' or mimeType='$MIMETYPE_DOC')");
 

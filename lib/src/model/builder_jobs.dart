@@ -5,7 +5,9 @@ import 'dart:async';
 import 'package:archive/archive.dart';
 import 'package:egamebook_server/src/gdrive_scraper/scraper.dart';
 import 'package:egamebook_server/src/model/builder_model.dart';
+import 'package:egamebook_server/src/server/constants.dart';
 import 'package:googleapis_auth/auth_io.dart';
+import 'package:http/http.dart';
 
 ///
 /// Scrape the drive and create snapshot
@@ -36,7 +38,11 @@ class DriveScaperJob extends Job {
       List<int> zipped = enc.encode(archive);
       log.add("Uploading ${zipped.length} bytes to GCS as ${dumpName}...");
 
-      results.add("http://seznam.cz/");
+      Response resp = await authorizedHttpClient.post("https://www.googleapis.com/upload/storage/v1/b/$BUCKET/o?uploadType=media&name=$dumpName", body: zipped);
+      if (resp.statusCode >= 400) {
+        throw "Upload failed ${resp.statusCode}: ${resp.body}";
+      }
+      results.add("https://storage.cloud.google.com/$BUCKET/$dumpName");
 
       log.add("Job done!");
       return true;
