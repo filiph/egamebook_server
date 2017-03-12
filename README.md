@@ -37,7 +37,13 @@ Run server:
     http://localhost:8080/test.html
     http://localhost:8080/api/v1/test
     
-You should see a reasonable test content there.
+You should see a reasonable test content there. If you do, proceed to:
+
+    http://localhost:8080/
+    
+You will be redirected to Google Auth service and after that - feel free to click on buttons.
+    
+You can also run script `run.sh` which executes all steps from above.    
 
 ## Server routing
 
