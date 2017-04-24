@@ -38,7 +38,8 @@ class Scraper {
   ///
   Future<Null> _scrapeFolder(d.DriveApi api, Archive archive, String folderId, String context) async {
     // query folder contents
-    d.FileList l = await api.files.list(pageSize: 1000, q: "'$folderId' in parents AND (mimeType='$MIMETYPE_FOLDER' or mimeType='$MIMETYPE_DOC')");
+    d.FileList l = await api.files.list(pageSize: 1000, q: "'$folderId' in parents");
+    // AND (mimeType='$MIMETYPE_FOLDER' or mimeType='$MIMETYPE_DOC')"); <-- this worked, but not anymore, now it returns only doc files and no folders
 
     // context is not empty, we are creating
     // files in current directory
@@ -47,7 +48,7 @@ class Scraper {
     } else {
       context = context + "/";
     }
-    
+
     for (var i = 0; i < l.files.length; ++i) {
       var f = l.files[i];
 
@@ -64,7 +65,7 @@ class Scraper {
         });
         archive.addFile(new ArchiveFile(context + f.name + ".txt", data.length, data));
       } else {
-        throw new Exception("Unknown mimeType: ${f.mimeType}");
+        // not interesting
       }
     }
     return null;
