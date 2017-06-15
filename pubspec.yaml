@@ -7,7 +7,7 @@ dependencies:
   angular2: ^2.0.0
   googleapis: any
   googleapis_auth: any
-  archive: 1.0.21 # not the newest one, but newer versions have issues
+  archive: ^1.0.29
   shelf: "^0.6.7"
   shelf_static: "^0.2.4"
   shelf_rest: "^0.3.4"
