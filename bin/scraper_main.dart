@@ -41,7 +41,7 @@ Future main(List<String> arguments) async {
   bool zipping = outputDir == null;
   
   // folder to scrape, change if you need to
-  const folderId = "0BzP0HrbVsp3KWFBOV1lZOU5FUEk";
+  const folderId = "0BzP0HrbVsp3KRVBQNXBnd0tPNzA";
 
   ClientId clientId = new ClientId(CLI_CLIENT_ID, CLI_SECRET);
   var SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
