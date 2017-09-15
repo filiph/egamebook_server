@@ -69,6 +69,10 @@ Future main(List<String> arguments) async {
   // save credentials
   serializeCredentialsForNextTime(authorizedHttpClient.credentials);
 
+  // close HTTP
+  authorizedHttpClient.close();
+  httpClient.close();
+
   if (zipping) {
     // ... zip them files
     ZipEncoder enc = new ZipEncoder();

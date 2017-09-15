@@ -7,7 +7,7 @@ dependencies:
   angular2: ^2.0.0
   googleapis: any
   googleapis_auth: any
-  archive: ^1.0.29
+  archive: 1.0.31 # not the newest one, but newer versions have issues
   shelf: "^0.6.7"
   shelf_static: "^0.2.4"
   shelf_rest: "^0.3.4"
@@ -15,7 +15,7 @@ dependencies:
   fnx_config: any
   fnx_rest: any
   http: any
-  convert: any
+  convert: 2.0.1
   args: any
 dev_dependencies:
   browser: ^0.10.0
