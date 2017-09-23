@@ -52,9 +52,13 @@ class Scraper {
     for (var i = 0; i < l.files.length; ++i) {
       var f = l.files[i];
 
-      if (f.mimeType == MIMETYPE_FOLDER) {
+      if (f.trashed || f.explicitlyTrashed) {
+        // this one is GONE
+
+      } else if (f.mimeType == MIMETYPE_FOLDER) {
         // let's dive deeper and wait for result
         await _scrapeFolder(api, archive, f.id, context + f.name);
+
       } else if (f.mimeType == MIMETYPE_DOC) {
         // export to TXT and add to archive
         d.Media downloaded = await api.files.export(f.id, "text/plain", downloadOptions: d.DownloadOptions.FullMedia);
