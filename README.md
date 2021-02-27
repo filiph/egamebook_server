@@ -4,7 +4,13 @@ Before you do anything else copy `gdrive_scraper/lib/config.dart-example`
 to `gdrive_scraper/lib/config.dart` and fill it with values obtained from
 https://console.cloud.google.com/apis/credentials
 
-You will need two client ID's - for web client and for CLI client (Other).
+You will need two OAuth client ID's - for web client and for CLI client
+(Desktop app).
+
+# Dart
+
+You'll need Dart 1.24, which you'll find
+[here](https://dart.dev/tools/sdk/archive).
 
 # CLI scraper
 

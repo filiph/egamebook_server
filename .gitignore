@@ -9,6 +9,14 @@ lib/config.dart
 egamebook_server.iml
 gdrive_scraper/.idea/
 gdrive_scraper/gdrive_scraper.iml
+drivedump-*/
+drivedump-*.zip
+
+# OS
+.DS_Store
+
+# A copy of Dart 1.24 SDK
+dart-1.24-sdk/
 
 ### Dart ###
 # See https://www.dartlang.org/tools/private-files.html
