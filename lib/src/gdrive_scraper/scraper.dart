@@ -1,6 +1,7 @@
 library gdrive_scraper;
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:archive/archive.dart';
 import 'package:googleapis/drive/v3.dart' as d;
@@ -52,7 +53,8 @@ class Scraper {
     for (var i = 0; i < l.files.length; ++i) {
       var f = l.files[i];
 
-      if (f.trashed || f.explicitlyTrashed) {
+      // ignore: literal_only_boolean_expressions
+      if ((f.trashed ?? false) || (f.explicitlyTrashed ?? false)) {
         // this one is GONE
 
       } else if (f.mimeType == MIMETYPE_FOLDER) {
@@ -67,7 +69,21 @@ class Scraper {
         chunks.forEach((List<int> chunk) {
           data.addAll(chunk);
         });
-        archive.addFile(new ArchiveFile(context + f.name + ".txt", data.length, data));
+        var text = UTF8.decode(data);
+        // Convert to UNIX newlines.
+        text = text.replaceAll('\r\n', '\n');
+        // Remove extra newlines.
+        text = text.replaceAll('\n\n', '\n');
+        // Google Docs eats one leading space. Add it back.
+        text = text.replaceAllMapped(new RegExp(r'^([ ]+)(\S)', multiLine: true), (m) {
+          return '${m.group(1)} ${m.group(2)}';
+        });
+        // Add newline at end of file.
+        text = '$text\n';
+        final newData = UTF8.encode(text);
+
+        var extension = f.name.endsWith(".txt") ? '' : '.txt';
+        archive.addFile(new ArchiveFile(context + f.name + extension, newData.length, newData));
       } else {
         // not interesting
       }
