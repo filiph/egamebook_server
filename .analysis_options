@@ -1,5 +1,7 @@
 analyzer:
   strong-mode: true
+  exclude:
+    - dart-1.24-sdk/
 linter:
   rules:
     - annotate_overrides
